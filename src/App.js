@@ -7,10 +7,17 @@ import SearchPainel from './components/SearchPainel';
 import { useState } from 'react';
 
 function App() {
+  const { REACT_APP_APIKEY } = process.env;
   const [dataSearch, setDataSearch] = useState([]);
   const searchAndApi = async (textSearch, typeSearch) => {
     console.log(textSearch, typeSearch);
+    const data = await fetch(
+      `http://www.omdbapi.com/?s=${textSearch}&type=${typeSearch}&apikey=${REACT_APP_APIKEY}`
+    );
+    const dataJson = await data.json();
+    console.log(dataJson);
   };
+
   return (
     <Container fluid>
       <Row>
