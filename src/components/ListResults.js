@@ -1,23 +1,21 @@
 import React, { Fragment } from 'react';
 import { Card, Row, Button } from 'react-bootstrap';
+import { consumeByIdMovieOrSerie } from '../consumeApi.js';
 import css from './listResults.module.css';
 import { useState } from 'react';
 import ModalItem from './ModalItem.js';
 
 export default function ListResults(props) {
-  const { REACT_APP_APIKEY } = process.env;
   const { results, totalResults } = props;
   const [modalShow, setModalShow] = useState(false);
   const [dataItem, setDataItem] = useState({});
 
   const handleShow = async (event) => {
     const { id } = event.target;
-    const data = await fetch(
-      `http://www.omdbapi.com/?i=${id}&plot=full&apikey=${REACT_APP_APIKEY}`
-    );
-    const dataJson = await data.json();
-    console.log(dataJson);
-    setDataItem(dataJson);
+    const results = await consumeByIdMovieOrSerie(id);
+
+    console.log(results);
+    setDataItem(results);
     setModalShow(true);
   };
 
