@@ -76,7 +76,11 @@ function SearchPainel(props) {
       </Row>
       <Row>
         <Col>
-          <Button onClick={clickSubmit} block>
+          <Button
+            onClick={clickSubmit}
+            disabled={!inputSearch || !radioType ? true : false}
+            block
+          >
             Pesquisar
           </Button>
         </Col>
