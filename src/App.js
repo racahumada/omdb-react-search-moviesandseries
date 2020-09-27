@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // import logo from './logo.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col, Spinner } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import { consumeListMoviesAndSeries } from './consumeApi.js';
 import SearchPainel from './components/SearchPainel';
 import ListResults from './components/ListResults';
@@ -13,7 +13,6 @@ function App() {
   const [radioType, setRadioType] = useState('');
   const [inputSearch, setInputSearch] = useState('');
   const [pageList, setPageList] = useState(1);
-  const [click, setClick] = useState(false); //Esta sendo usado como flag para aparecer o spinner
 
   useEffect(() => {
     const effectRadio = async () => {
@@ -26,24 +25,21 @@ function App() {
       setTotalResults(results.totalResults);
     };
     effectRadio();
+
     // eslint-disable-next-line
   }, [radioType, pageList]);
 
-  const searchAndApi = () => {
-    setClick(true);
-
+  const searchAndApi = async () => {
     //setTimeOut para teste de Spinner
-    setTimeout(async () => {
-      setPageList(1);
-      const results = await consumeListMoviesAndSeries(
-        inputSearch,
-        radioType,
-        pageList
-      );
-      setDataSearch(results.Search);
-      setTotalResults(results.totalResults);
-      setClick(false);
-    }, 500);
+
+    setPageList(1);
+    const results = await consumeListMoviesAndSeries(
+      inputSearch,
+      radioType,
+      pageList
+    );
+    setDataSearch(results.Search);
+    setTotalResults(results.totalResults);
   };
 
   const getRadio = (value) => {
@@ -78,11 +74,6 @@ function App() {
               totalResults={totalResults}
               pageGet={getPage}
               pageList={pageList}
-            />
-          ) : click && !dataSearch ? (
-            <Spinner
-              animation="grow"
-              className="d-flex justify-content-center"
             />
           ) : (
             <p>
