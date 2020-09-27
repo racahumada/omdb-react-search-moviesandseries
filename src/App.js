@@ -1,34 +1,94 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import logo from './logo.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Spinner } from 'react-bootstrap';
 import { consumeListMoviesAndSeries } from './consumeApi.js';
 import SearchPainel from './components/SearchPainel';
 import ListResults from './components/ListResults';
+import HeaderResults from './components/HeaderResults.js';
 
 function App() {
-  // const { REACT_APP_APIKEY } = process.env;
   const [dataSearch, setDataSearch] = useState([]);
   const [totalResults, setTotalResults] = useState(0);
+  const [radioType, setRadioType] = useState('');
+  const [inputSearch, setInputSearch] = useState('');
+  const [pageList, setPageList] = useState(1);
+  const [click, setClick] = useState(false); //Esta sendo usado como flag para aparecer o spinner
 
-  const searchAndApi = async (textSearch, typeSearch) => {
-    const results = await consumeListMoviesAndSeries(textSearch, typeSearch);
-    console.log(results);
-    setDataSearch(results.Search);
-    setTotalResults(results.totalResults);
+  useEffect(() => {
+    const effectRadio = async () => {
+      const results = await consumeListMoviesAndSeries(
+        inputSearch,
+        radioType,
+        pageList
+      );
+      setDataSearch(results.Search);
+      setTotalResults(results.totalResults);
+    };
+    effectRadio();
+    // eslint-disable-next-line
+  }, [radioType, pageList]);
+
+  const searchAndApi = () => {
+    setClick(true);
+
+    //setTimeOut para teste de Spinner
+    setTimeout(async () => {
+      setPageList(1);
+      const results = await consumeListMoviesAndSeries(
+        inputSearch,
+        radioType,
+        pageList
+      );
+      setDataSearch(results.Search);
+      setTotalResults(results.totalResults);
+      setClick(false);
+    }, 500);
+  };
+
+  const getRadio = (value) => {
+    setRadioType(value);
+  };
+
+  const getInput = (value) => {
+    setInputSearch(value);
+  };
+
+  const getPage = (value) => {
+    setPageList(value);
   };
 
   return (
     <Container fluid>
       <Row>
         <Col xs={12} md={2}>
-          <SearchPainel submitSearch={searchAndApi} />
+          <SearchPainel
+            submitSearch={searchAndApi}
+            radioType={radioType}
+            inputSearch={inputSearch}
+            radioGet={getRadio}
+            inputGet={getInput}
+          />
         </Col>
         <Col xs={12} md={10}>
-          {totalResults ? (
-            <ListResults results={dataSearch} totalResults={totalResults} />
+          <HeaderResults totalResults={totalResults} />
+          {totalResults && dataSearch ? (
+            <ListResults
+              results={Object.assign(dataSearch)}
+              totalResults={totalResults}
+              pageGet={getPage}
+              pageList={pageList}
+            />
+          ) : click && !dataSearch ? (
+            <Spinner
+              animation="grow"
+              className="d-flex justify-content-center"
+            />
           ) : (
-            <h5 className="mt-3">Nenhum filme ou série encontrado</h5>
+            <p>
+              Use o Painel de pesquisa ao lado, para procurar por seu filme ou
+              série
+            </p>
           )}
         </Col>
       </Row>

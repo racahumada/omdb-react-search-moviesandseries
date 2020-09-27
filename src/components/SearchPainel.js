@@ -7,13 +7,9 @@ import {
   Button,
   ToggleButton,
 } from 'react-bootstrap';
-import { useState } from 'react';
 
 function SearchPainel(props) {
-  const { submitSearch } = props;
-
-  const [radioType, setRadioType] = useState('');
-  const [inputSearch, setInputSearch] = useState('');
+  const { submitSearch, radioType, inputSearch, radioGet, inputGet } = props;
 
   const arrBtnRadio = [
     { name: 'Filme', value: 'movie' },
@@ -22,16 +18,16 @@ function SearchPainel(props) {
 
   const handleCheck = (e) => {
     const { value } = e.target;
-    setRadioType(value);
+    radioGet(value);
   };
 
   const handleText = (e) => {
     const { value } = e.target;
-    setInputSearch(value);
+    inputGet(value);
   };
 
   const clickSubmit = () => {
-    submitSearch(inputSearch, radioType);
+    submitSearch();
   };
   return (
     <Fragment>
