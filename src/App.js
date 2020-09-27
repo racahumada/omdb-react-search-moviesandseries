@@ -30,8 +30,6 @@ function App() {
   }, [radioType, pageList]);
 
   const searchAndApi = async () => {
-    //setTimeOut para teste de Spinner
-
     setPageList(1);
     const results = await consumeListMoviesAndSeries(
       inputSearch,
